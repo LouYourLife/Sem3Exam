@@ -123,7 +123,7 @@ public class Book implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Book[ isbn=" + isbn + " ]";
+        return "Book{" + "isbn=" + isbn + ", title=" + title + ", publisher=" + publisher + ", publishYear=" + publishYear + ", authors=" + authors + ", library=" + library + '}';
     }
     
 }
