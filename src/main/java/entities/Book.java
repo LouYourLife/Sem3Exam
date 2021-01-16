@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Book implements Serializable {
@@ -27,6 +28,9 @@ public class Book implements Serializable {
     
     @ManyToOne
     private Library library;
+    
+    @OneToMany(mappedBy = "book", cascade = CascadeType.PERSIST)
+    private List<Loan> loans;
 
     public Book() {
     }
@@ -37,6 +41,28 @@ public class Book implements Serializable {
         this.publisher = publisher;
         this.publishYear = publishYear;
         this.authors = new ArrayList<>();
+        this.loans = new ArrayList<>();
+    }
+
+    public List<Loan> getLoans() {
+        return loans;
+    }
+    
+    public void addLoan(Loan loan) {
+        
+        if(loan != null) {
+            //System.out.println("Book Class:");
+            //System.out.println(loan);
+            this.loans.add(loan);
+            //System.out.println(this.loans);
+            loan.setBook(this);
+        }
+    }
+    
+    public void removeLoan(Loan loan) {
+        if(loan != null) {
+            loans.remove(loan);
+        }
     }
 
     public List<Author> getAuthors() {

@@ -95,11 +95,35 @@ public class BookFacade {
         }
     }
     
+    public BookDTO deleteBook(int isbn) {
+        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
+        EntityManager em = emf.createEntityManager();
+        
+        Book book = em.find(Book.class, isbn);
+        if(book == null) {
+            //Throw Exception??
+        } else {
+            try {
+                em.getTransaction().begin();
+//                List<Author> authors = book.getAuthors();
+//                for(Author a : authors) {
+//                    em.remove(a);
+//                }
+                em.remove(book);
+                em.getTransaction().commit();
+            } finally {
+                em.close();
+            }
+        }
+        return new BookDTO(book);
+    }
+    
 //    public static void main(String[] args) {
 //        //List<BookDTO> list = getBooksByTitle("Coraline");
 //        //List<BookDTO> list = getAllBooks();
 //        BookDTO b = new BookDTO(43251, "Test2", "BookMania", 2004, "Thomas Mortem");
-//        BookDTO bDTO = addBook(b);
+//        //BookDTO bDTO = addBook(b);
+//        BookDTO bDTO = deleteBook(11446);
 //        System.out.println("Main");
 //        System.out.println(bDTO);
 //    }
