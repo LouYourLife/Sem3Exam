@@ -3,6 +3,8 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.BookDTO;
+import dto.LoanDTO;
+import entities.Loan;
 import facades.BookFacade;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -42,6 +44,19 @@ public class BookResource {
     public String searchBooksByTitle(@PathParam("title") String title) {
         List<BookDTO> list = facade.getBooksByTitle(title);
         return GSON.toJson(list);
+    }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("loan")
+    //@RolesAllowed("user")
+    public String addLoan(String loan) {
+        LoanDTO l = GSON.fromJson(loan, LoanDTO.class);
+        LoanDTO lDTO = facade.makeLoan(l);
+        //LoanDTO lDTO = facade.makeLoan(username, password, isbn);
+        String json = GSON.toJson(lDTO);
+        return json;
     }
     
     @POST

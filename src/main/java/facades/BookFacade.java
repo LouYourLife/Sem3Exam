@@ -2,10 +2,14 @@ package facades;
 
 import dto.AuthorDTO;
 import dto.BookDTO;
+import dto.LoanDTO;
 import entities.Author;
 import entities.Book;
 import entities.Library;
+import entities.Loan;
+import entities.Member;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -70,6 +74,31 @@ public class BookFacade {
         }
     }
     
+    public LoanDTO makeLoan(LoanDTO l) {
+        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
+        EntityManager em = emf.createEntityManager();
+
+        Book book = em.find(Book.class, l.getIsbn());
+        Member m = new Member(l.getUsername(), l.getPassword());
+        Loan loan = new Loan(new Date());
+        
+        System.out.println(book);
+        book.addLoan(loan);
+        m.AddMemLoans(loan);
+        
+        LoanDTO lDTO = new LoanDTO(l.getUsername(), l.getPassword(), l.getIsbn());
+        
+        try {
+            em.getTransaction().begin();
+            em.persist(loan);
+            em.persist(m);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return lDTO;
+    }
+    
     public BookDTO addBook(BookDTO b) {
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
         EntityManager em = emf.createEntityManager();
@@ -118,15 +147,15 @@ public class BookFacade {
         return new BookDTO(book);
     }
     
-    
-    
 //    public static void main(String[] args) {
 //        //List<BookDTO> list = getBooksByTitle("Coraline");
 //        //List<BookDTO> list = getAllBooks();
-//        BookDTO b = new BookDTO(43251, "Test2", "BookMania", 2004, "Thomas Mortem");
+//        //BookDTO b = new BookDTO(43251, "Test2", "BookMania", 2004, "Thomas Mortem");
 //        //BookDTO bDTO = addBook(b);
-//        BookDTO bDTO = deleteBook(11446);
+//        //BookDTO bDTO = deleteBook(11446);
+//        LoanDTO l = new LoanDTO("Thomas", "fjfgbkg", 555);
+//        LoanDTO lDTO = makeLoan(l);
 //        System.out.println("Main");
-//        System.out.println(bDTO);
+//        System.out.println(lDTO);
 //    }
 }
