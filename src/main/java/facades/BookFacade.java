@@ -1,7 +1,10 @@
 package facades;
 
+import dto.AuthorDTO;
 import dto.BookDTO;
+import entities.Author;
 import entities.Book;
+import entities.Library;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -25,8 +28,7 @@ public class BookFacade {
         return instance;
     }
     
-    public static List<BookDTO> getBooksByTitle(String title) {
-        //EntityManager em = emf.createEntityManager();
+    public List<BookDTO> getBooksByTitle(String title) {
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
         EntityManager em = emf.createEntityManager();
         
@@ -52,13 +54,53 @@ public class BookFacade {
         } finally {
             em.close();
         }
+
+    }
+    
+    public List<String> getAllBooks() {
+        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
+        EntityManager em = emf.createEntityManager();
         
-        //return list;
+        try {
+            TypedQuery tq = em.createQuery("SELECT b.title FROM Book AS b", String.class);
+            List<String> list = tq.getResultList();
+            return list;
+        } finally {
+            em.close();
+        }
+    }
+    
+    public BookDTO addBook(BookDTO b) {
+        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
+        EntityManager em = emf.createEntityManager();
+        
+        Book book = new Book(b.getIsbn(), b.getTitle(), b.getPublisher(), b.getPublishYear());
+        BookDTO bDTO;
+        
+        try {
+            Library l = em.find(Library.class, "Gladsaxe Bibliotek");
+            List<AuthorDTO> aDTOs = b.getAuthors();
+            for(AuthorDTO a : aDTOs) {
+                Author au = new Author(a.getName());
+                book.addAuthor(au);
+            }
+            l.addBook(book);
+            em.getTransaction().begin();
+            em.persist(book);
+            em.getTransaction().commit();
+            bDTO = new BookDTO(book);
+            return bDTO;
+        } finally {
+            em.close();
+        }
     }
     
 //    public static void main(String[] args) {
-//        List<BookDTO> list = getBooksByTitle("Coraline");
+//        //List<BookDTO> list = getBooksByTitle("Coraline");
+//        //List<BookDTO> list = getAllBooks();
+//        BookDTO b = new BookDTO(43251, "Test2", "BookMania", 2004, "Thomas Mortem");
+//        BookDTO bDTO = addBook(b);
 //        System.out.println("Main");
-//        System.out.println(list);
+//        System.out.println(bDTO);
 //    }
 }

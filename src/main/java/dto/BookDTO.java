@@ -27,6 +27,19 @@ public class BookDTO {
             this.authors.add(new AuthorDTO(author));
         }
     }
+    
+    public BookDTO(int isbn, String title, String publisher, int pYear, String author) {
+        this.isbn = isbn;
+        this.title = title;
+        this.publisher = publisher;
+        this.publishYear = pYear;
+        
+        //Idea, separate string with kommas and add all to arraylist if time
+        this.authors = new ArrayList<>();
+        Author a = new Author(author);
+        AuthorDTO aDTO = new AuthorDTO(a);
+        this.authors.add(aDTO);
+    }
 
     public int getIsbn() {
         return isbn;
