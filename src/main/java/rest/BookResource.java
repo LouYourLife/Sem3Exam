@@ -50,7 +50,7 @@ public class BookResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("loan")
-    //@RolesAllowed("user")
+    @RolesAllowed("user")
     public String addLoan(String loan) {
         LoanDTO l = GSON.fromJson(loan, LoanDTO.class);
         LoanDTO lDTO = facade.makeLoan(l);
@@ -73,7 +73,7 @@ public class BookResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{isbn}")
-    //@RolesAllowed("admin")
+    @RolesAllowed("admin")
     public String deleteBook(@PathParam("isbn") int isbn) {
         BookDTO bDTO = facade.deleteBook(isbn);
         String json = GSON.toJson(bDTO);
